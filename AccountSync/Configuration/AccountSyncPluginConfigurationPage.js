@@ -76,14 +76,14 @@
 
                             if (e.target.classList.contains('btnDeleteProfile')) {
 
-                                var syncTo = e.target.closest('div.syncButtonContainer').dataset.syncTo;
-                                var syncFrom = e.target.closest('div.syncButtonContainer').dataset.syncFrom;
+                                var syncTo = e.target.closest('div.syncButtonContainer').dataset.syncto;
+                                var syncFrom = e.target.closest('div.syncButtonContainer').dataset.syncfrom;
 
                                 var syncList = [];
                                
                                 ApiClient.getPluginConfiguration(pluginId).then((config) => {
                                     config.SyncList.forEach((c) => {
-                                        if (c.SyncToAccount !== syncto && c.SyncFromAccount !== syncfrom ) {
+                                        if (c.SyncToAccount !== syncTo && c.SyncFromAccount !== syncFrom ) {
                                             syncList.push(c);
                                         }
                                     });
@@ -102,15 +102,9 @@
                             if (e.target.closest('div > .syncProfile')) {  
 
                                 var ele = e.target.closest('div > .syncProfile');
-                                    
-                                ApiClient.getPluginConfiguration(pluginId).then((config) => {
-                                    config.SyncList.forEach((c) => {
-                                        if (c.SyncToAccount === ele.dataset.syncto && c.SyncFromAccount === ele.dataset.syncfrom) {
-                                            userOneSelect.value = c.SyncToAccount;
-                                            userTwoSelect.value = c.SyncFromAccount;
-                                        }
-                                    });
-                                });
+                                userOneSelect.value = ele.dataset.syncto;
+                                userTwoSelect.value = ele.dataset.syncfrom;
+                                   
                             }
                             return false;
                         });
