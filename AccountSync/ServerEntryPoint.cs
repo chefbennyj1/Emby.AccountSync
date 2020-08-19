@@ -27,17 +27,14 @@ namespace AccountSync
 
         private void SessionManager_PlaybackStopped(object sender, PlaybackStopEventArgs e)
         {
-            Log.Info("Received Playback stopped");
+           
             if (!Plugin.Instance.Configuration.SyncList.Exists(user => user.SyncFromAccount == e.Session.UserId)) return;
-            Log.Info("Preparing Progress Sync...");
+            
             var sync = Plugin.Instance.Configuration.SyncList.FirstOrDefault(user => user.SyncFromAccount == e.Session.UserId);
 
-            var syncFromUser = UserManager.GetUserById(sync.SyncFromAccount);
             var syncToUser   = UserManager.GetUserById(sync.SyncToAccount);
-
-            Log.Info($"{syncFromUser.Name} will sync to {syncToUser.Name}: {e.Item.Name} - Playback Progress Ticks: {e.Item.PlaybackPositionTicks}" );
-
-            Synchronize.SynchronizePlayState(syncToUser, syncFromUser, e.Item, e.PlaybackPositionTicks.Value);
+            
+            Synchronize.SynchronizePlayState(syncToUser, e.Item, e.PlaybackPositionTicks.Value);
 
         }
         

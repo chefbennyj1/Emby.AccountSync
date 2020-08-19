@@ -20,24 +20,24 @@ namespace AccountSync
             Log = logMan.GetLogger(Plugin.Instance.Name);
         }
 
-        // ReSharper disable once TooManyArguments
-        public static void SynchronizePlayState(User syncToUser, User syncFromUser, BaseItem item, long? playbackPositionTicks)
+        public static void SynchronizePlayState(User syncToUser, User syncFromUser, BaseItem item)
         {
-            var syncToItemData   = UserDataManager.GetUserData(syncToUser, item); //Sync To
+            var syncToItemData = UserDataManager.GetUserData(syncToUser, item); //Sync To
             var syncFromItemData = UserDataManager.GetUserData(syncFromUser, item); //Sync From
-
-            //If the long? playbackPositionTicks is null, it's the scheduled task requesting the sync operation
-            //If the long? playbackPositionTicks has Value, then it is being used by the "PlaybackStopEventArgs" which would send the Progress Tick along with the Void request.
-            if (playbackPositionTicks is null) 
+            
+            if (syncToItemData.PlaybackPositionTicks < syncFromItemData.PlaybackPositionTicks)
             {
-                //Only update the progress to the Sync'd account if the SyncFrom account progress is further along in the media stream.
-                if (syncToItemData.PlaybackPositionTicks < syncFromItemData.PlaybackPositionTicks) 
-                {
-                    syncToItemData.PlaybackPositionTicks = syncFromItemData.PlaybackPositionTicks;
-                    return;
-                }
+                syncToItemData.PlaybackPositionTicks = syncFromItemData.PlaybackPositionTicks;
+                UserDataManager.SaveUserData(syncToUser, item, syncToItemData, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
             }
 
+        }
+
+        // ReSharper disable once TooManyArguments
+        public static void SynchronizePlayState(User syncToUser, BaseItem item, long? playbackPositionTicks)
+        {
+            var syncToItemData   = UserDataManager.GetUserData(syncToUser, item); //Sync To
+            
             syncToItemData.PlaybackPositionTicks = playbackPositionTicks.Value;
 
             UserDataManager.SaveUserData(syncToUser, item, syncToItemData, UserDataSaveReason.PlaybackProgress, CancellationToken.None);

@@ -38,7 +38,7 @@ namespace AccountSync
                 {
                     var item = LibraryManager.GetItemById(queryResultIds[i]);
 
-                    Synchronize.SynchronizePlayState(syncToUser, syncFromUser, item, null);
+                    Synchronize.SynchronizePlayState(syncToUser, syncFromUser, item);
 
                     progress.Report(queryResultIds.Count() - (queryResultIds.Count() - i) / 100);
                 }
