@@ -12,6 +12,7 @@ namespace AccountSync
     {
         private static IUserDataManager UserDataManager { get; set; }
         private static ILogger Log { get; set; }
+
         // ReSharper disable once TooManyDependencies
         public Synchronize(IUserDataManager userDataManager, ILogManager logMan)
         {
@@ -22,14 +23,19 @@ namespace AccountSync
         // ReSharper disable once TooManyArguments
         public static void SynchronizePlayState(User syncToUser, User syncFromUser, BaseItem item, long? playbackPositionTicks)
         {
-            
-            var syncToItemData = UserDataManager.GetUserData(syncToUser, item); //Sync To
+            var syncToItemData   = UserDataManager.GetUserData(syncToUser, item); //Sync To
             var syncFromItemData = UserDataManager.GetUserData(syncFromUser, item); //Sync From
 
-            if (playbackPositionTicks is null)
+            //If the long? playbackPositionTicks is null, it's the scheduled task requesting the sync operation
+            //If the long? playbackPositionTicks has Value, then it is being used by the "PlaybackStopEventArgs" which would send the Progress Tick along with the Void request.
+            if (playbackPositionTicks is null) 
             {
-                syncToItemData.PlaybackPositionTicks = syncFromItemData.PlaybackPositionTicks;
-                return;
+                //Only update the progress to the Sync'd account if the SyncFrom account progress is further along in the media stream.
+                if (syncToItemData.PlaybackPositionTicks < syncFromItemData.PlaybackPositionTicks) 
+                {
+                    syncToItemData.PlaybackPositionTicks = syncFromItemData.PlaybackPositionTicks;
+                    return;
+                }
             }
 
             syncToItemData.PlaybackPositionTicks = playbackPositionTicks.Value;
