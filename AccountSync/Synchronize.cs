@@ -36,11 +36,11 @@ namespace AccountSync
         // ReSharper disable once TooManyArguments
         public static void SynchronizePlayState(User syncToUser, BaseItem item, long? playbackPositionTicks)
         {
-            var syncToItemData   = UserDataManager.GetUserData(syncToUser, item); //Sync To
+            var syncToUserItemData   = UserDataManager.GetUserData(syncToUser, item); //Sync To
             
-            syncToItemData.PlaybackPositionTicks = playbackPositionTicks.Value;
+            syncToUserItemData.PlaybackPositionTicks = playbackPositionTicks.Value;
 
-            UserDataManager.SaveUserData(syncToUser, item, syncToItemData, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
+            UserDataManager.SaveUserData(syncToUser, item, syncToUserItemData, UserDataSaveReason.PlaybackProgress, CancellationToken.None);
 
         }
 
