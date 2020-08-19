@@ -83,7 +83,7 @@
                                
                                 ApiClient.getPluginConfiguration(pluginId).then((config) => {
                                     config.SyncList.forEach((c) => {
-                                        if (c.SyncToAccount !== syncTo && c.SyncFromAccount !== syncFrom ) {
+                                        if (c.SyncToAccount !== syncto && c.SyncFromAccount !== syncfrom ) {
                                             syncList.push(c);
                                         }
                                     });
@@ -105,7 +105,7 @@
                                     
                                 ApiClient.getPluginConfiguration(pluginId).then((config) => {
                                     config.SyncList.forEach((c) => {
-                                        if (c.SyncToAccount === ele.dataset.syncTo && c.SyncFromAccount === ele.dataset.syncFrom) {
+                                        if (c.SyncToAccount === ele.dataset.syncto && c.SyncFromAccount === ele.dataset.syncfrom) {
                                             userOneSelect.value = c.SyncToAccount;
                                             userTwoSelect.value = c.SyncFromAccount;
                                         }
