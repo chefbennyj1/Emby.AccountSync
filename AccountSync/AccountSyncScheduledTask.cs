@@ -27,25 +27,32 @@ namespace AccountSync
         }
         public async Task Execute(CancellationToken cancellationToken, IProgress<double> progress)
         {
-            foreach (var syncProfile in Plugin.Instance.Configuration.SyncList)
+            try
             {
-                var syncToUser = UserManager.GetUserById(syncProfile.SyncToAccount); //Sync To
-                var syncFromUser = UserManager.GetUserById(syncProfile.SyncFromAccount); //Sync From
-
-                var queryResultIds = LibraryManager.GetInternalItemIds(new InternalItemsQuery() { IncludeItemTypes = new[] { "Movie", "Episode" } });
-
-                for (var i = 0; i <= queryResultIds.Count() - 1; i++)
+                foreach (var syncProfile in Plugin.Instance.Configuration.SyncList)
                 {
-                    var item = LibraryManager.GetItemById(queryResultIds[i]);
+                    var syncToUser = UserManager.GetUserById(syncProfile.SyncToAccount); //Sync To
+                    var syncFromUser = UserManager.GetUserById(syncProfile.SyncFromAccount); //Sync From
 
-                    Synchronize.SynchronizePlayState(syncToUser, syncFromUser, item);
+                    var queryResultIds = LibraryManager.GetInternalItemIds(new InternalItemsQuery()
+                        {IncludeItemTypes = new[] {"Movie", "Episode"}});
 
-                    progress.Report(queryResultIds.Count() - (queryResultIds.Count() - i) / 100);
+                    for (var i = 0; i <= queryResultIds.Count() - 1; i++)
+                    {
+                        var item = LibraryManager.GetItemById(queryResultIds[i]);
+
+                        Synchronize.SynchronizePlayState(syncToUser, syncFromUser, item);
+
+                        progress.Report(queryResultIds.Count() - (queryResultIds.Count() - i) / 100);
+                    }
+
                 }
-
-                progress.Report(100.0);
-
             }
+            catch
+            {
+            }
+
+            progress.Report(100.0);
         }
 
         public IEnumerable<TaskTriggerInfo> GetDefaultTriggers()

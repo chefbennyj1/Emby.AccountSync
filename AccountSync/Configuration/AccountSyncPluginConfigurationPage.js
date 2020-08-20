@@ -76,7 +76,7 @@
 
                             if (e.target.classList.contains('btnDeleteProfile')) {
 
-                                var syncTo = e.target.closest('div.syncButtonContainer').dataset.syncto;
+                                var syncTo   = e.target.closest('div.syncButtonContainer').dataset.syncto;
                                 var syncFrom = e.target.closest('div.syncButtonContainer').dataset.syncfrom;
 
                                 var syncList = [];
@@ -87,7 +87,9 @@
                                             syncList.push(c);
                                         }
                                     });
+
                                     config.SyncList = syncList;
+
                                     ApiClient.updatePluginConfiguration(pluginId, config).then(
                                         (result) => {
                                             Dashboard.hideLoadingMsg();
